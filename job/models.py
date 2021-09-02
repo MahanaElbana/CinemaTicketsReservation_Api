@@ -21,7 +21,16 @@ from django.db.models.fields import CharField
       - documentation of Django :- 
          -- in search write ==> Model field referenc        
 '''
-#! 
+
+'''
+  1] after finishing from project save files on github :- 
+        -- git add .
+             -  ~/CinemaTicketsReservation_Api/CinemaTicketsReservation_Api$ git add .
+        -- git commit -m "write_description"
+             -  ~/CinemaTicketsReservation_Api/CinemaTicketsReservation_Api$ git commit -m "pro"
+        -- git push 
+             -  ~/CinemaTicketsReservation_Api/CinemaTicketsReservation_Api$ git commit -m "pro"       
+'''
 JOB_TYPE = [
     ('FT', 'FULL TIME'),
     ('PT', 'PART TIME'),
