@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.deletion import CASCADE
 from django.db.models.fields import CharField
 
 # Create your models here.
@@ -31,10 +32,26 @@ from django.db.models.fields import CharField
         -- git push 
              -  ~/CinemaTicketsReservation_Api/CinemaTicketsReservation_Api$ git commit -m "pro"       
 '''
+
+'''
+ Relations :- 
+    - One to Many  ex. [ user -posts] ==> in django known ForeginKey
+    - Many to Many  ex [user -groups]
+    - One to one [user -profile]
+'''
+
 JOB_TYPE = [
     ('FT', 'FULL TIME'),
     ('PT', 'PART TIME'),
 ]
+
+
+class Category(models.Model):
+    name = models.CharField(max_length= 25)
+    
+    def __str__(self):
+          return self.name
+
 
 class Jobs(models.Model):  #table
       title = models.CharField(max_length= 20) #column (field)
@@ -44,6 +61,8 @@ class Jobs(models.Model):  #table
       vacency = models.IntegerField(default= 1)
       salery = models.IntegerField(default= 0)
       experience =models.IntegerField(default= 1)
+      category = models.ForeignKey(Category ,on_delete= models.CASCADE )
 
       def __str__(self):
           return self.title 
+
