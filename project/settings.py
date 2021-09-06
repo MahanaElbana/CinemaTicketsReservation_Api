@@ -11,7 +11,10 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-
+import os
+from typing import cast
+from decouple import config
+from dj_database_url import parse as durl
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,12 +23,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-v@)t^xc=_%1eztc_mfoiy+ysf)vd%9gb@)a5lea_pfwd4*-+_l'
-
+#! SECRET_KEY = 'django-insecure-v@)t^xc=_%1eztc_mfoiy+ysf)vd%9gb@)a5lea_pfwd4*-+_l'
+SECRET_KEY =config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+#!DEBUG = True
+DEBUG =config('DEBUG')
+#ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1','.localhost', 'eatingfish.herokuapp.com']
 
 
 # Application definition
@@ -40,12 +44,37 @@ INSTALLED_APPS = [
     
     # created apps ==> python manage.py startapp "name_of_app" 
     'rest_framework',
+    'rest_framework.authtoken',
+    "corsheaders",
     'ticket',
-    'job'
+    'job',
+    'meal'
 ]
-REST_FRAMEWORK = {}
+
+####### --------- golobal and for each view -------- ######
+'''
+ 1] - global
+    - BasicAuthentication => sing in each once is not used real
+    - tokens and keys  --> is used in real life    
+
+'''
+REST_FRAMEWORK = {
+    
+ #'DEFAULT_AUTHENTICATION_CLASSES': 
+ #['rest_framework.authentication.TokenAuthentication',],
+ #'DEFAULT_AUTHENTICATION_CLASSES': 
+ # ['rest_framework.authentication.BasicAuthentication',],
+ #'DEFAULT_PERMISSION_CLASSES': 
+ # ['rest_framework.permissions.IsAuthenticated',]
+
+}
+####### --------- golobal and for each view -------- ######
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+
+    "corsheaders.middleware.CorsMiddleware",
+    
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -77,12 +106,18 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+default_dburl = 'sqlite:///'+os.path.join(BASE_DIR ,'db.sqlite3')
+## ! original data base 
+## ! DATABASES = {
+## !     'default': {
+## !         'ENGINE': 'django.db.backends.sqlite3',
+## !         'NAME': BASE_DIR / 'db.sqlite3',
+## !     }
+## ! }
 
+## ! database for Heroku
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default':config('DATABASE_URL',default=default_dburl,cast=durl )
 }
 
 
@@ -123,8 +158,44 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC =os.path.join(BASE_DIR ,"static")
+#######  --------------- for static files --------###
+STATICFILES_DIRS = [
+   
+    os.path.join(BASE_DIR ,"static")  
+]
+MEDIA_ROOT =os.path.join(BASE_DIR ,"media")
+MEDIA_URL='/media/'
+#######  --------------- for static files --------###
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+
+'''
+   -- link of library :- has detailed explains:-
+         https://pypi.org/project/django-cors-headers/
+         command to install django-cors-headers:-
+               pip install django-cors-headers
+
+  The same-origin policy
+      [1] Cross-origin resource sharing (CORS) :-
+            is a mechanism that allows
+            restricted resources on a web page to be requested from another
+            domain outside the domain from which the first resource was served.
+           
+      2] CORS defines :- 
+            a way in which a browser and server can interact to determine 
+            whether it is safe to allow the cross-origin request.
+            It allows for more freedom and functionality than purely same-origin requests,
+            but is more secure than simply allowing all cross-origin requests.    
+      
+      3] does the same-origin policy block all cross-origin requests?  
+           nope! , embedding Javascript, CSS, and images from origins is always
+           allowed, as well as some POST requests (like form submissions). But, 
+           for example, making an arbitrary GET request to an HTTP API isn't.    
+'''

@@ -1,10 +1,10 @@
 from django.db import models
 from django.db.models.deletion import CASCADE
 from django.db.models.fields import CharField
-
+from datetime import datetime
 # Create your models here.
 
-
+#https://www.youtube.com/playlist?list=PL8GFhcuc_fW4cxdkRtWIlln1DQ3CZwQen
 '''
  [1] models.Model :-from django and  provide us :- 
     - validation 
@@ -66,3 +66,19 @@ class Jobs(models.Model):  #table
       def __str__(self):
           return self.title 
 
+''' 
+1] to activate project :- 
+   - source ./python_env/bin/activate
+2] to run server :-    
+   - python manage.py runserver
+3] to know libraries which installed on env :-
+   - pip freeze 
+4] to save libraries in text file :- 
+  - pip freeze > requirements.txt   
+'''   
+
+class Post(models.Model):
+     title = models.CharField(max_length= 50)
+     content =models.TextField(max_length= 100)
+     created_at = models.DateTimeField(default= datetime.now)
+     image =models.ImageField(upload_to = 'post-image/')
